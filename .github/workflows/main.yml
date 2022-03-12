@@ -40,8 +40,8 @@ jobs:
           local: target/demoAction.jar
           remote: /root/demoAction.jar
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          username: root
+          privateKey : ${{ secrets.PRIVATE_KEY }}
       - name: 在服务器上执行 java -jar，请确保服务器安装了 JDK
         if: always()
         uses: fifsky/ssh-action@master
