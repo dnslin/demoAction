@@ -49,6 +49,6 @@ jobs:
           command: | # 命令中的 & 表示在后台运行进程
             cd /root && java -jar demoAction.jar &
           host: ${{ secrets.HOST }}
-          user: ${{ secrets.SSH_USER }}
-          pass: ${{ secrets.SSH_PASSWORD }}
+          user: root
+          key: ${{ secrets.PRIVATE_KEY}}
           args: "-tt"
