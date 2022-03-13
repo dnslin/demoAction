@@ -1,19 +1,57 @@
-# Getting Started
+name: Deploy with docker
 
-### Reference Documentation
+on:
+push:
+# 分支
+branches: [ master ]
+pull_request:
+branches: [ master ]
 
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.6.4/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.6.4/maven-plugin/reference/html/#build-image)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.4/reference/htmlsingle/#boot-features-developing-web-applications)
-
-### Guides
-
-The following guides illustrate how to use some features concretely:
-
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
-
+jobs:
+compile:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v2
+- name: Set up JDK 11
+uses: actions/setup-java@v2
+with:
+java-version: '11'
+distribution: 'adopt'
+# maven缓存，不加的话每次都会去重新拉取，会影响速度
+- name: Dependies Cache
+uses: actions/cache@v2
+with:
+path: ~/.m2/repository
+key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+restore-keys: |
+${{ runner.os }}-maven-
+# 编译打包
+- name: Build with Maven
+run: mvn package -Dmaven.test.skip=true
+# 登录Docker Hub
+- name: Login to Docker Hub
+uses: docker/login-action@v1
+with:
+username: ${{ secrets.DOCKER_HUB_USERNAME }}
+password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+- name: Set up Docker Buildx
+id: buildx
+uses: docker/setup-buildx-action@v1
+# build 镜像并push到中央仓库中
+- name: Build and push
+id: docker_build
+uses: docker/build-push-action@v2
+with:
+context: ./
+file: ./Dockerfile
+push: true
+tags: ${{ secrets.DOCKER_HUB_USERNAME }}/imageName:latest
+# push后，用ssh连接服务器执行脚本
+- name: SSH
+uses: fifsky/ssh-action@master
+with:
+command: |
+sh start.sh
+host: ${{ secrets.HOST }}
+user: ${{ secrets.USER }}
+key: ${{ secrets.PRIVATE_KEY}}
