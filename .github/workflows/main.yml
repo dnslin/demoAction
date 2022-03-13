@@ -51,7 +51,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/demoaction:latest
       - name: ssh连接服务器执行脚本
-        if: always()
+#        if: always()
         uses: fifsky/ssh-action@master
         with:
           command: | # 命令中的 & 表示在后台运行进程
@@ -59,7 +59,7 @@ jobs:
           host: ${{ secrets.HOST }}
           user: root
           key: ${{ secrets.PRIVATE_KEY}}
-          args: "-tt"
+          args: "-tt -vvv"
 #      - name: 将 JAR 包部署到服务器
 #        uses: garygrossgarten/github-action-scp@release
 #        with:
