@@ -1,23 +1,23 @@
-name: Deploy with docker
+name: Deploy with docker
 
 on:
 push:
-# 分支
-branches: [ master ]
+# 分支
+branches: [ master ]
 pull_request:
-branches: [ master ]
+branches: [ master ]
 
 jobs:
 compile:
-runs-on: ubuntu-latest
+runs-on: ubuntu-latest
 steps:
-- uses: actions/checkout@v2
-- name: Set up JDK 11
-uses: actions/setup-java@v2
+- uses: actions/checkout@v2
+- name: Set up JDK 11
+uses: actions/setup-java@v2
 with:
-java-version: '11'
-distribution: 'adopt'
-# maven缓存，不加的话每次都会去重新拉取，会影响速度
+java-version: '11'
+distribution: 'adopt'
+# maven缓存，不加的话每次都会去重新拉取，会影响速度
 - name: Dependies Cache
 uses: actions/cache@v2
 with:
