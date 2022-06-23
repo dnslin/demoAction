@@ -1,0 +1,49 @@
+name: create-release
+
+on:
+  push:
+    # 分支
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: Running Java ${{ matrix.java }} compile
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: 缓存 Maven 依赖
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: 编译代码
+        run: mvn compile
+      - name: Deploy the JAR file to the remote server
+        uses: actions/checkout@v2
+      - name: 设置JDK版本为1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: 用Maven打成Jar包
+        run: mvn -B package --file pom.xml -Dmaven.test.skip=true
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: demoAction.jar
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        env:
+          GITHUB_REPOSITORY: dnslin/demoAction
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: demoAction.jar
+		  
