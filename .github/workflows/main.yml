@@ -4,6 +4,9 @@ on:
   push:
     # 分支
     branches: [ master ]
+    tags:        
+      - v2
+      - v1.*
   pull_request:
     branches: [ master ]
 
