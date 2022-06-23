@@ -39,9 +39,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: demoAction.jar
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         env:
           GITHUB_REPOSITORY: dnslin/demoAction
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
       - name: 设置Docker USER 和 TOKEN
         uses: docker/login-action@v1
         with:
