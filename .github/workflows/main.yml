@@ -41,6 +41,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          body_path: ${{ github.workspace }}-CHANGELOG.txt
           files: demoAction.jar
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         env:
