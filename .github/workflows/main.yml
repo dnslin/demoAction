@@ -40,6 +40,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
+        run: cd target
         with:
           body_path: ${{ github.workspace }}-CHANGELOG.txt
           files: demoAction.jar
